@@ -36,7 +36,7 @@ jobs:
 
       - name: LgoIn to Docker Hub
         uses: actions/checkout@v2
-          env:
+          with:
             DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
             DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
