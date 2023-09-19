@@ -34,11 +34,9 @@ jobs:
           name: web-release
           path: ./build/web
 
-  deploy:
+  build:
     name: Build Docker Image and Deploy to Docker Hub
-    needs: build
     runs-on: ubuntu-latest
-
     steps:
     - name: Docker Login
       uses: actions/checkout@v2
