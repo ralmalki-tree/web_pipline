@@ -2,7 +2,7 @@ name: Web Release
 on:
   push:
     branches:
-      - 'main'
+      - 'gh-pages'
     
 jobs:
   build:
