@@ -34,7 +34,7 @@ jobs:
           name: web-release
           path: ./build/web
 
-  build:
+  deploy:
     name: Build Docker Image and Deploy to Docker Hub
     needs: build
     runs-on: ubuntu-latest
