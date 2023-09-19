@@ -1,8 +1,8 @@
 name: Web Release
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+    
 jobs:
   build:
     name: Create Web Build
