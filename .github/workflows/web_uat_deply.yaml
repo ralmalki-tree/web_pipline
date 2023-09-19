@@ -34,21 +34,22 @@ jobs:
           name: web-release
           path: ./build/web
 
-  build:
-    name: Build Docker Image and Deploy to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-    - name: Docker Login
-      uses: actions/checkout@v2
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
+    - name: Build Docker Image and Deploy to Docker Hub
+        runs-on: ubuntu-latest
+        steps:
+        - name: Docker Login
+          uses: actions/checkout@v2
+          env:
+            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD 
 
-    - name: Build the Docker Image
-      run: |
-        docker build -t tree-webapp .
-        docker tag tree-webapp $DOCKER_USERNAME/tree-webapp:latest
-        docker push $DOCKER_USERNAME/tree-webapp:latest
+      - name: Build the Docker Image
+        run: |
+          docker build -t tree-webapp .
+          docker tag tree-webapp $DOCKER_USERNAME/tree-webapp:latest
+          docker push $DOCKER_USERNAME/tree-webapp:latest
+
+    
       
 
