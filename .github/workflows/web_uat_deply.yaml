@@ -28,6 +28,11 @@ jobs:
         with:
           name: web-release
           path: ./build/web
+  docker:
+    name: Create Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: LgoIn to Docker Hub
         uses: actions/checkout@v2
         with:
