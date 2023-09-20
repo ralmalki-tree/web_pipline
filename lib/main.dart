@@ -1,4 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt_io.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:pointycastle/asymmetric/api.dart';
 
 void main() {
   runApp(const MyApp());
@@ -57,15 +63,39 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  void _incrementCounter() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpeg', 'pdf', 'doc', 'docx', 'png', 'jpg'],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      // print(file.name);
+      // print(file.bytes);
+      // print(file.size);
+      // print(file.extension);
+      final Uint8List beforeEnc = Uint8List.fromList(result.files.first.bytes!);
+
+      final publicKey = await parseKeyFromFile<RSAPublicKey>(
+          '/Users/riyadalmalki/Projects/webDeploy/web_example/lib/keys/public.pem');
+      final privKey = await parseKeyFromFile<RSAPrivateKey>(
+          '/Users/riyadalmalki/Projects/webDeploy/web_example/lib/keys/private.pem');
+
+
+      // Encrypter encrypter;
+      // encrypter = Encrypter(RSA(
+      //   publicKey: publicKey,
+      //   privateKey: privKey,
+      //   encoding: RSAEncoding.OAEP,
+      //   digest: RSADigest.SHA256,
+      // ));
+
+      // final encrypted = encrypter.encryptBytes(beforeEnc);
+      // print(encrypted.bytes);
+      // print(encrypted.base64);
+    } else {
+      // User canceled the picker
+    }
   }
 
   @override
