@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
+import 'dart:developer';
 
-import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt_io.dart';
+import 'package:encrypt/encrypt.dart' as en;
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+
+import "package:pointycastle/pointycastle.dart";
 
 void main() {
   runApp(const MyApp());
@@ -19,137 +25,192 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo2 22',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpeg', 'pdf', 'doc', 'docx', 'png', 'jpg'],
-    );
-    if (result != null) {
-      PlatformFile file = result.files.first;
-      // print(file.name);
-      // print(file.bytes);
-      // print(file.size);
-      // print(file.extension);
-      final Uint8List beforeEnc = Uint8List.fromList(result.files.first.bytes!);
-
-      final publicKey = await parseKeyFromFile<RSAPublicKey>(
-          '/Users/riyadalmalki/Projects/webDeploy/web_example/lib/keys/public.pem');
-      final privKey = await parseKeyFromFile<RSAPrivateKey>(
-          '/Users/riyadalmalki/Projects/webDeploy/web_example/lib/keys/private.pem');
-
-
-      // Encrypter encrypter;
-      // encrypter = Encrypter(RSA(
-      //   publicKey: publicKey,
-      //   privateKey: privKey,
-      //   encoding: RSAEncoding.OAEP,
-      //   digest: RSADigest.SHA256,
-      // ));
-
-      // final encrypted = encrypter.encryptBytes(beforeEnc);
-      // print(encrypted.bytes);
-      // print(encrypted.base64);
-    } else {
-      // User canceled the picker
-    }
-  }
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final Encrypter encrypter = Encrypter();
+
+    encryptFile(Uint8List file) async {
+      final encryptTheFile = encrypter.encryptFile(file);
+      debugPrint('The AES key => ${encrypter.keyToBase64}');
+      print('\n------------------------------------------\n');
+
+      final encryptedKey = await encrypter.encryptedKeyToRsa();
+      debugPrint('The AES key encrypted to RSA => $encryptedKey');
+
+      print('\n------------------------------------------\n');
+
+      print(
+          'The File content encrypted using the AES before encryption => $encryptTheFile');
+    }
+
+    _uploadFile() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpeg', 'pdf', 'doc', 'docx', 'png', 'jpg'],
+      );
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        final Uint8List fileBeforeEncryption =
+            Uint8List.fromList(result.files.first.bytes!);
+        final encryptedFile = encryptFile(fileBeforeEncryption);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Home'),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          children: [
+            OutlinedButton(
+              onPressed: _uploadFile,
+              child: const Text('Upload File'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
+class Encrypter {
+  final en.Key key = en.Key.fromBase64(utils.CreateCryptoRandomString(32));
+
+  en.Key get getKey => key;
+
+  en.IV get iv =>
+      en.IV(Uint8List.fromList(utf8.encode(key.base64).sublist(0, 16)));
+
+  String get keyToBase64 => key.base64;
+
+  Future<String> encryptedKeyToRsa() async {
+    final publicPem = await rootBundle.loadString('keys/public.pem');
+
+    final parser = en.RSAKeyParser();
+    final RSAPublicKey publicKey = parser.parse(publicPem) as RSAPublicKey;
+
+    final encrypter = en.Encrypter(
+      en.RSA(
+        publicKey: publicKey,
+        encoding: en.RSAEncoding.OAEP,
+        digest: en.RSADigest.SHA256,
+      ),
+    );
+    return encrypter.encrypt(key.base64).base64;
+  }
+
+  en.Encrypter get encrypter =>
+      en.Encrypter(en.AES(key, mode: en.AESMode.cfb64));
+
+  String encryptFile(Uint8List content) {
+    return encrypter.encryptBytes(content, iv: iv).base64;
+  }
+}
+
+class utils {
+  static final Random _random = Random.secure();
+
+  static String CreateCryptoRandomString([int length = 32]) {
+    var values = List<int>.generate(length, (i) => _random.nextInt(256));
+
+    return base64Url.encode(values);
+  }
+}
+
+
+
+/*
+
+
+
+ _testingKeys() {
+      final key = encrypt.Key.fromSecureRandom(64);
+      final iv = encrypt.IV.fromSecureRandom(16);
+
+      print('key: ${key.base64}');
+      print('iv: ${iv.base64}');
+      final iv2 = encrypt
+          .IV(Uint8List.fromList(utf8.encode(key.base64).sublist(0, 16)));
+      print('IV from key: ${iv2.base64}');
+    }
+
+    _uploadFileAES() async {
+      final key = encrypt.Key.fromSecureRandom(32);
+      // final iv = encrypt.IV.fromSecureRandom(16);
+      final iv = encrypt
+          .IV(Uint8List.fromList(utf8.encode(key.base64).sublist(0, 16)));
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpeg', 'pdf', 'doc', 'docx', 'png', 'jpg'],
+      );
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        final Uint8List beforeEnc =
+            Uint8List.fromList(result.files.first.bytes!);
+
+        final encrypter =
+            encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.cbc));
+
+        final encrypted = encrypter.encryptBytes(
+          beforeEnc,
+          iv: iv,
+        );
+        print(encrypted.base64);
+      } else {
+        // User canceled the picker
+      }
+    }
+
+    _uploadFileRSA() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpeg', 'pdf', 'doc', 'docx', 'png', 'jpg'],
+      );
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        final Uint8List beforeEnc =
+            Uint8List.fromList(result.files.first.bytes!);
+
+        final publicPem = await rootBundle.loadString('keys/public.pem');
+        final privPem = await rootBundle.loadString('keys/private.pem');
+
+        final parser = encrypt.RSAKeyParser();
+        final RSAPublicKey publicKey = parser.parse(publicPem) as RSAPublicKey;
+        final RSAPrivateKey privKey = parser.parse(privPem) as RSAPrivateKey;
+
+        encrypt.Encrypter encrypter;
+        encrypter = encrypt.Encrypter(
+          encrypt.RSA(
+            publicKey: publicKey,
+            privateKey: privKey,
+            encoding: encrypt.RSAEncoding.OAEP,
+            digest: encrypt.RSADigest.SHA256,
+          ),
+        );
+
+        print(beforeEnc.lengthInBytes);
+        final first = beforeEnc.sublist(0, 100);
+        final encrypted = encrypter.encryptBytes(
+          beforeEnc,
+        );
+        // print(encrypted.bytes);
+        print(encrypted.bytes.lengthInBytes);
+      } else {
+        // User canceled the picker
+      }
+    }
+
+    */
