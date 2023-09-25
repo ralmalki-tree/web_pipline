@@ -16,7 +16,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.3' # Specify your Flutter version
+          flutter-version: '3.10.3'
+          cache: true
 
       - name: Get dependencies
         run: flutter pub get
@@ -25,10 +26,10 @@ jobs:
         run: flutter build web --release
 
       - name: Login to Docker Hub
-        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Build Docker image
-        run: docker build -t "$DOCKER_USERNAME"/"$DOCKER_REPO":latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest .
 
       - name: Push Docker image
-        run: docker push "$DOCKER_USERNAME"/"$DOCKER_REPO":latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
