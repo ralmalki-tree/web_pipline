@@ -29,11 +29,10 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to Oracle Cloud
-        env:
-          ORACLE_CLOUD_PRIVATE_KEY: ${{ secrets.ORACLE_CLOUD_PRIVATE_KEY }}
+      - name: Login to Oracle Cloud Container Registry
         run: |
-          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} -p echo $ORACLE_CLOUD_PRIVATE_KEY | base64 --decode > private_key.pem ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io"
+          echo ${{ secrets.ORACLE_CLOUD_PRIVATE_KEY }} | base64 --decode > private_key.pem
+          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} --password-stdin ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io" < private_key.pem
           docker logout
 
       - name: Build and push Docker image to Oracle Cloud Container Registry
