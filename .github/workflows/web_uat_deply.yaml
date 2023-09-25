@@ -32,7 +32,7 @@ jobs:
       - name: Login to Oracle Cloud Container Registry
         run: |
           echo ${{ secrets.ORACLE_CLOUD_PRIVATE_KEY }} | base64 --decode > private_key.pem
-          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} --password-stdin ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io" < private_key.pem
+          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} --password-stdin ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io < private_key.pem
           docker logout
 
       - name: Build and push Docker image to Oracle Cloud Container Registry
