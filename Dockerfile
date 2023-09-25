@@ -1,8 +1,7 @@
-# Install Operating system and dependencies
-FROM node:lts-alpine
-RUN pm -y -g install serve
-WORKDIR /app/
-COPY ./build/web ./web
+FROM nginx:1.25.2-alpine
 
-EXPOSE 3000
-CMD ["serve", "web"]
+COPY ./build/web /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
