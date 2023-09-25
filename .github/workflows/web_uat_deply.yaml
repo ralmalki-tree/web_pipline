@@ -39,8 +39,7 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx inspect default --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest .
-          docker push ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest --push .
 
 
 
