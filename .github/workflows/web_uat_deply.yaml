@@ -33,15 +33,15 @@ jobs:
         env:
           ORACLE_CLOUD_PRIVATE_KEY: ${{ secrets.ORACLE_CLOUD_PRIVATE_KEY }}
         run: |
-          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} -p echo "$PRIVATE_KEY" | base64 --decode > private_key.pem ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io"
+          docker login -u ${{ secrets.ORACLE_CLOUD_USER_OCID }} -p echo $ORACLE_CLOUD_PRIVATE_KEY | base64 --decode > private_key.pem ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io"
           docker logout
 
       - name: Build and push Docker image to Oracle Cloud Container Registry
         run: |
           docker buildx create --use
           docker buildx inspect default --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t "${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest" .
-          docker push "${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest"
+          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest .
+          docker push ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest
 
 
 
