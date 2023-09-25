@@ -36,11 +36,14 @@ jobs:
 
       - name: Build and push Docker image to Oracle Cloud Container Registry
         run: |
-          docker buildx create --use
-          docker buildx inspect default --bootstrap
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest --push .
-
-
+            docker buildx create --use
+            docker buildx inspect default --bootstrap
+            
+            # Build and tag the Docker image
+            docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.YOUR_CONTAINER_REGISTRY_REPOSITORY }}:latest .
+            
+            # Push the Docker image
+            docker push ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.YOUR_CONTAINER_REGISTRY_REPOSITORY }}:latest
 
 
 
