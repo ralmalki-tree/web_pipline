@@ -21,12 +21,12 @@ jobs:
 
       - name: Get dependencies
         run: flutter pub get
-        cache:
-          paths:
-            - .packages
-            - .flutter-plugins
-            - .flutter-plugins-dependencies
-            - $HOME/.pub-cache
+        # cache:
+        #   paths:
+        #     - .packages
+        #     - .flutter-plugins
+        #     - .flutter-plugins-dependencies
+        #     - $HOME/.pub-cache
 
       - name: Build Flutter web
         run: flutter build web --release
