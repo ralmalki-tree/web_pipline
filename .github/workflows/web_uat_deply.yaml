@@ -46,9 +46,9 @@ jobs:
           docker buildx inspect default --bootstrap
 
           # Build and tag the Docker image
-          docker build --platform linux/amd64 -t "me-jeddah-1.ocir.io/raymalk86@gmail.com/tryweb:latest" -f Dockerfile .
+          docker build --platform linux/amd64 -t "me-jeddah-1.ocir.io/raymalk86/tryweb:latest" -f Dockerfile .
 
-          docker push me-jeddah-1.ocir.io/raymalk86@gmail.com/tryweb:latest
+          docker push me-jeddah-1.ocir.io/raymalk86/tryweb:latest
 
 ##For pushing to docker hub
 # - name: Login to Docker Hub
