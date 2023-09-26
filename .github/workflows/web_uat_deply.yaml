@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.AUTH_USERNAME }}
           password: ${{ secrets.AUTH_TOKEN }}
 
-      - name: Build and push Docker image to Oracle Cloud Container Registry (OCIR)
+      - name: Build and push Docker image to Oracle Cloud Container Registry (OCIR).
         run: |
           docker buildx create --use
           docker buildx inspect default --bootstrap
