@@ -38,7 +38,7 @@ jobs:
       - name: Login to Oracle Cloud Container Registry (OCIR)
         uses: docker/login-action@v2
         with:
-          registry: jed.ocir.io
+          registry: me-jeddah-1.ocir.io
           username: ${{ secrets.AUTH_USERNAME }}
           password: ${{ secrets.AUTH_TOKEN }}
 
