@@ -42,9 +42,9 @@ jobs:
             # Build and tag the Docker image
             docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest .
             
-            # Push the Docker image
-            echo ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}
-            docker push ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest
+            # # Push the Docker image
+            # echo ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}
+            # docker push ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest
 
 
 
