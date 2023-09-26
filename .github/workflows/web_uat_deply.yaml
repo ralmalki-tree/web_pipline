@@ -21,6 +21,12 @@ jobs:
 
       - name: Get dependencies
         run: flutter pub get
+        cache:
+          paths:
+            - .packages
+            - .flutter-plugins
+            - .flutter-plugins-dependencies
+            - $HOME/.pub-cache
 
       - name: Build Flutter web
         run: flutter build web --release
@@ -40,7 +46,7 @@ jobs:
             docker buildx inspect default --bootstrap
             
             # Build and tag the Docker image
-            docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCER_OCI_PATH }} .
+            docker buildx build --platform linux/amd64,linux/arm64 -t "${{ secrets.DOCER_OCI_PATH }} ." --push
 
             # me-jeddah-1.ocir.io/ocid1.tenancy.oc1..aaaaaaaai6wa5zem5zvom46lvufuwpl5tg2sfw2c2usca6343kdkb5j4mejq/ocid1.containerrepo.oc1.me-jeddah-1.0.axmcxtiuiaqm.aaaaaaaamu7bk7gco5akbnow72wyrqueruywhws3ewnogrnjyquzlzsfivoa:latest
             # docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.ORACLE_CLOUD_REGION }}.ocir.io/${{ secrets.ORACLE_CLOUD_TENANCY_OCID }}/${{ secrets.CONTAINER_REGISTRY_REPOSITORY }}:latest .
