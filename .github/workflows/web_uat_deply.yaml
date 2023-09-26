@@ -3,7 +3,7 @@ name: Flutter Web Build and Docker Push
 on:
   push:
     branches:
-      - main
+      - tryweb
 
 jobs:
   build:
